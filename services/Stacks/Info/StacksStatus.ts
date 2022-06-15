@@ -33,5 +33,5 @@ const getStatusCall = (apiHost: string): Function => (
   }
 );
 
-export const getStatus = getStatusCall(`${process.env.NEXT_PUBLIC_STACKS_API_HOST}`);
+export const getStatus = getStatusCall(`${process.env.STACKS_API_HOST}`);
 export const getNetworkStatus = getStatusCall(NETWORK_HOST);

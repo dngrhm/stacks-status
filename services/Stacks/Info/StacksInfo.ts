@@ -33,5 +33,5 @@ const getInfoCall = (apiHost: string): Function => (
   }
 );
 
-export const getInfo = getInfoCall(`${process.env.NEXT_PUBLIC_STACKS_API_HOST}`);
+export const getInfo = getInfoCall(`${process.env.STACKS_API_HOST}`);
 export const getNetworkInfo = getInfoCall(NETWORK_HOST);
