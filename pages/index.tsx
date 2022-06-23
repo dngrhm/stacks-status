@@ -2,15 +2,20 @@ import React from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next'
 import { PageHeader, StatusCard } from "../components"
 import { getInfo, getNetworkInfo, getStatus } from '../services';
+import Head from 'next/head';
 
 function App({localInfo, networkInfo, localStatus}: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
   const localHeight = localInfo?.stacks_tip_height;
   const networkHeight = networkInfo?.stacks_tip_height;
   const syncPercent = localHeight && networkHeight ? (localHeight / networkHeight) * 100 : 0;
+  const statusDescription = localHeight && networkHeight ? `${localHeight} of ${networkHeight}` : 'Loading...';
 
   return (
     <div className="min-h-screen med:p-10 bg-gray-50">
+      <Head>
+        <title>Stacks Node - Umbrel</title>
+      </Head>
       <main className="py-10">
         <PageHeader
           status={localStatus?.status}
@@ -23,7 +28,7 @@ function App({localInfo, networkInfo, localStatus}: InferGetServerSidePropsType<
             <StatusCard
               title="Sync Status"
               percent={syncPercent}
-              description={`${localHeight} of ${networkHeight}`}
+              description={statusDescription}
             />
 
           </div>
@@ -35,16 +40,22 @@ function App({localInfo, networkInfo, localStatus}: InferGetServerSidePropsType<
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const localInfo = await getInfo();
-  const networkInfo = await getNetworkInfo();
-  const localStatus  = await getStatus();
+  try {
+    const localInfo = await getInfo();
+    const networkInfo = await getNetworkInfo();
+    const localStatus  = await getStatus();
 
-  return {
-    props: {
-      localInfo,
-      networkInfo,
-      localStatus,
-     },
+    Object.keys(localStatus).forEach(key => localStatus[key] === undefined && delete localStatus[key])
+
+    return {
+      props: {
+        localInfo,
+        networkInfo,
+        localStatus,
+      },
+    }
+  } catch (err) {
+    return {props: {}}
   }
 } 
 
