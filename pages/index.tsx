@@ -41,11 +41,9 @@ function App({localInfo, networkInfo, localStatus}: InferGetServerSidePropsType<
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
-    const localInfo = await getInfo();
-    const networkInfo = await getNetworkInfo();
-    const localStatus  = await getStatus();
-
-    Object.keys(localStatus).forEach(key => localStatus[key] === undefined && delete localStatus[key])
+    const localInfo = JSON.parse(JSON.stringify(await getInfo()));
+    const networkInfo = JSON.parse(JSON.stringify(await getNetworkInfo()));
+    const localStatus  = JSON.parse(JSON.stringify(await getStatus()));
 
     return {
       props: {
